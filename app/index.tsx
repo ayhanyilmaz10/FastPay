@@ -1,25 +1,48 @@
-import { Stack, Link } from 'expo-router';
 
-import { View } from 'react-native';
+import React from 'react';
+import { FlatList, ScrollView, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button } from '@/components/Button';
-import { Container } from '@/components/Container';
-import { ScreenContent } from '@/components/ScreenContent';
 
-export default function Home() {
+import Header from '../components/Header';
+import CreditCard, { CardProps } from '../components/CreditCard';
+import BalanceCard from '../components/BalanceCard';
+import QuickActions from '../components/QuickActions';
+
+
+const CARDS_DATA: CardProps[] = [
+  { id: '1', holderName: 'John Green', expiry: '06/27', last4: '1234', type: 'visa' },
+  { id: '2', holderName: 'John Green', expiry: '08/28', last4: '5678', type: 'mastercard' },
+  { id: '3', holderName: 'John Green', expiry: '12/25', last4: '9012', type: 'visa' },
+];
+
+export default function WalletScreen() {
   return (
-    <View className={styles.container}>
-      <Stack.Screen options={{ title: 'Home' }} />
-      <Container>
-        <ScreenContent path="app/index.tsx" title="Home"></ScreenContent>
-        <Link href={{ pathname: '/details', params: { name: 'Dan' } }} asChild>
-          <Button title="Show Details" />
-        </Link>
-      </Container>
-    </View>
+    <SafeAreaView className="flex-1 bg-gray-50">
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Header />
+
+        <View className="mt-5 h-[220px]">
+          <FlatList
+            data={CARDS_DATA}
+            renderItem={({ item }) => <CreditCard card={item} />}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            decelerationRate="fast"
+            snapToInterval={320 + 20} // Kart genişliği + margin
+            contentContainerStyle={{ paddingHorizontal: 20 }}
+          />
+        </View>
+
+        <BalanceCard />
+        <QuickActions />
+
+        <View className="px-5 mt-8 mb-32">
+          <Text className="text-xl font-bold text-gray-800">Transactions</Text>
+          
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
-
-const styles = {
-  container: 'flex flex-1 bg-white',
-};
